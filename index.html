@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlashCards | Cartões de estudo</title>
+  <meta name="description" content="Cartões de estudo com frente e verso, embaralhamento, acertos e erros e revisão espaçada.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <button class="marca" id="ir-inicio">Flash<span>Cards</span></button>
+    <p class="ofensiva" id="ofensiva" title="Dias seguidos estudando"></p>
+  </header>
+
+  <!-- Baralhos -->
+  <main class="app" id="tela-inicio">
+    <section class="hoje" id="hoje"></section>
+    <div class="barra"><h1>Baralhos</h1><button class="btn" id="novo-baralho">+ Novo baralho</button></div>
+    <ul class="baralhos" id="baralhos"></ul>
+  </main>
+
+  <!-- Baralho aberto -->
+  <main class="app" id="tela-baralho" hidden>
+    <button class="voltar" data-voltar>‹ Baralhos</button>
+    <div class="bar-topo">
+      <div><h1 id="b-nome"></h1><p id="b-desc"></p></div>
+      <div class="bar-acoes"><button class="btn sec" id="b-editar">Renomear</button><button class="btn sec perigo" id="b-excluir">Excluir</button></div>
+    </div>
+    <div class="caixas" id="b-caixas" aria-label="Cartões por nível de domínio"></div>
+    <div class="modos">
+      <button class="modo" data-modo="inteligente"><b>Revisão inteligente</b><span id="m-int"></span></button>
+      <button class="modo" data-modo="tudo"><b>Estudar todos</b><span id="m-tudo"></span></button>
+      <button class="modo" data-modo="erros"><b>Só os que errei</b><span id="m-erros"></span></button>
+    </div>
+    <section class="cartas">
+      <div class="barra"><h2>Cartões</h2><button class="link" id="b-importar">Colar vários de uma vez</button></div>
+      <form class="nova-carta" id="form-carta" autocomplete="off">
+        <label class="sr" for="c-frente">Frente</label><input id="c-frente" maxlength="200" placeholder="Frente (pergunta)" required>
+        <label class="sr" for="c-verso">Verso</label><input id="c-verso" maxlength="300" placeholder="Verso (resposta)" required>
+        <button class="btn">Adicionar</button>
+      </form>
+      <ul class="lista-cartas" id="lista-cartas"></ul>
+    </section>
+  </main>
+
+  <!-- Estudo -->
+  <main class="app estudo" id="tela-estudo" hidden>
+    <div class="est-topo">
+      <button class="voltar" id="sair-estudo">✕ Sair</button>
+      <div class="est-prog"><i id="est-barra"></i></div>
+      <span id="est-cont">1/10</span>
+    </div>
+    <div class="palco">
+      <button class="carta" id="carta" aria-live="polite">
+        <span class="face frente"><small>Pergunta</small><span id="carta-frente"></span><em>toque ou aperte espaço para virar</em></span>
+        <span class="face verso"><small>Resposta</small><span id="carta-verso"></span></span>
+      </button>
+    </div>
+    <div class="respostas" id="respostas">
+      <button class="resp errei" id="errei" disabled><b>Errei</b><span>tecla 1</span></button>
+      <button class="resp acertei" id="acertei" disabled><b>Acertei</b><span>tecla 2</span></button>
+    </div>
+  </main>
+
+  <!-- Fim do estudo -->
+  <main class="app" id="tela-fim" hidden>
+    <section class="fim">
+      <p class="fim__emoji" id="fim-emoji">🎉</p>
+      <h1 id="fim-titulo">Sessão concluída!</h1>
+      <p id="fim-texto"></p>
+      <div class="fim__nums"><div><strong id="fim-acertos">0</strong><span>acertos</span></div><div><strong id="fim-erros">0</strong><span>erros</span></div><div><strong id="fim-pct">0%</strong><span>aproveitamento</span></div></div>
+      <div class="fim__acoes"><button class="btn" id="fim-revisar">Revisar os que errei</button><button class="btn sec" data-voltar-baralho>Voltar ao baralho</button></div>
+    </section>
+  </main>
+
+  <dialog id="dlg-baralho" aria-labelledby="db-titulo">
+    <form method="dialog">
+      <h2 id="db-titulo">Novo baralho</h2>
+      <label>Nome<input id="db-nome" required maxlength="40" placeholder="Ex.: Inglês para viagem"></label>
+      <label>Descrição<input id="db-desc" maxlength="80" placeholder="Opcional"></label>
+      <fieldset><legend>Cor</legend><div class="cores" id="db-cores"></div></fieldset>
+      <div class="acoes"><button value="cancelar" formnovalidate class="btn sec">Cancelar</button><button value="salvar" class="btn">Salvar</button></div>
+    </form>
+  </dialog>
+  <dialog id="dlg-importar" aria-labelledby="di-titulo">
+    <form method="dialog">
+      <h2 id="di-titulo">Colar vários cartões</h2>
+      <p class="nota">Um cartão por linha, com frente e verso separados por <b>;</b> ou <b>tab</b>. Ex.: <code>dog ; cachorro</code></p>
+      <textarea id="di-texto" rows="8" placeholder="apple ; maçã&#10;book ; livro"></textarea>
+      <div class="acoes"><button value="cancelar" formnovalidate class="btn sec">Cancelar</button><button value="importar" class="btn">Importar</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script src="js/script.js"></script>
+</body>
+</html>
